@@ -25,7 +25,6 @@ export default function SignupScreen() {
         'Account Created', 
         'Your account has been created successfully! Please check your email to confirm your account.',
         [{ text: 'OK', onPress: () => {
-          // Use the direct approach for now since we're rebuilding
           router.push("/login");
         }}]
       );

@@ -20,6 +20,8 @@ export default function LoginScreen() {
     
     try {
       await signIn(email, password);
+      // Navigate to main app after successful login
+      router.replace('/(tabs)');
     } catch (error: any) {
       Alert.alert('Error', error.message || 'Failed to sign in');
     }
@@ -58,12 +60,7 @@ export default function LoginScreen() {
       
       <ThemedView style={styles.footer}>
         <ThemedText>Don't have an account? </ThemedText>
-        <TouchableOpacity 
-          onPress={() => {
-            // @ts-expect-error - Expo Router typing issue
-            router.push('/signup');
-          }}
-        >
+        <TouchableOpacity onPress={() => router.push('/signup')}>
           <ThemedText type="link">Sign Up</ThemedText>
         </TouchableOpacity>
       </ThemedView>

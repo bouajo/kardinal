@@ -1,7 +1,7 @@
 // context/AuthContext.tsx
 import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
 import { supabase } from '@/lib/supabase';
-import { User, Session } from '@supabase/supabase-js';
+import { User } from '@supabase/supabase-js';
 import { router } from 'expo-router';
 
 // Define types for our context
@@ -28,19 +28,39 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     // Check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user || null);
-      setLoading(false);
-    });
+    const getSession = async () => {
+      try {
+        const { data, error } = await supabase.auth.getSession();
+        if (!error && data.session) {
+          setUser(data.session.user);
+        }
+      } catch (error) {
+        console.warn('Error checking session:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getSession();
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
+    try {
+      const { data } = supabase.auth.onAuthStateChange((_event, session) => {
         setUser(session?.user || null);
-      }
-    );
-
-    return () => subscription.unsubscribe();
+      });
+      
+      // Return cleanup function
+      return () => {
+        // Skip unsubscribe if not available (e.g. on web)
+        if (data?.subscription?.unsubscribe) {
+          data.subscription.unsubscribe();
+        }
+      };
+    } catch (error) {
+      console.warn('Error setting up auth listener:', error);
+      setLoading(false);
+      return () => {}; // Return empty cleanup function
+    }
   }, []);
 
   const signIn = async (email: string, password: string) => {
@@ -72,15 +92,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (authError) throw authError;
       
       if (authData?.user) {
-        const { error: profileError } = await supabase
-          .from('driver_profiles')
-          .insert({
-            id: authData.user.id,
-            full_name: fullName,
-            is_active: true
-          });
-        
-        if (profileError) throw profileError;
+        try {
+          const { error: profileError } = await supabase
+            .from('driver_profiles')
+            .insert({
+              id: authData.user.id,
+              full_name: fullName,
+              is_active: true
+            });
+          
+          if (profileError) console.warn('Error creating profile:', profileError);
+        } catch (error) {
+          console.warn('Error creating profile:', error);
+        }
       }
     } catch (error: any) {
       console.error('Error signing up:', error.message);

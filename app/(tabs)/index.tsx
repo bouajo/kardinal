@@ -1,3 +1,4 @@
+// app/(tabs)/index.tsx
 import React, { useEffect } from 'react';
 import { StyleSheet, TouchableOpacity, ScrollView, RefreshControl } from 'react-native';
 import { router } from 'expo-router';
@@ -111,7 +112,7 @@ export default function HomeScreen() {
   });
 
   const handleCardPress = () => {
-    if (process.env.EXPO_OS === 'ios') {
+    if (Platform.OS === 'ios') {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
   };
@@ -217,7 +218,7 @@ export default function HomeScreen() {
           <TouchableOpacity
             key={route.id}
             style={styles.routeItem}
-            onPress={() => router.push('/')}
+            onPress={() => router.push('/(tabs)/route-optimization')}
           >
             <ThemedView style={styles.routeItemContent}>
               <ThemedText style={styles.routeName}>{route.name}</ThemedText>

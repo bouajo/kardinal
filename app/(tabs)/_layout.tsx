@@ -1,3 +1,4 @@
+// app/(tabs)/_layout.tsx
 import { Tabs } from 'expo-router';
 import React from 'react';
 import { Platform } from 'react-native';
@@ -8,7 +9,8 @@ import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 
-export default function TabLayout() {
+// Explicit function declaration for default export
+function TabLayout() {
   const colorScheme = useColorScheme();
 
   return (
@@ -61,7 +63,24 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="gear" color={color} />,
         }}
       />
-      {/* Hidden screens that don't appear in the tab bar */}
+      <Tabs.Screen
+        name="profile"
+        options={{
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="map"
+        options={{
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="explore"
+        options={{
+          href: null,
+        }}
+      />
       <Tabs.Screen
         name="route-optimization"
         options={{
@@ -83,3 +102,6 @@ export default function TabLayout() {
     </Tabs>
   );
 }
+
+// Very explicit export
+export default TabLayout;
