@@ -1,143 +1,263 @@
 // app/(tabs)/routes.tsx
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
+import React from 'react';
+import { 
+  View, 
+  StyleSheet, 
+  SafeAreaView, 
+  ScrollView, 
+  TouchableOpacity, 
+  FlatList
+} from 'react-native';
 import { router } from 'expo-router';
+import { ArrowLeft, Plus } from 'react-native-feather';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { supabase } from '@/lib/supabase';
-import { useAuth } from '@/context/AuthContext';
+import { Card, CardContent } from '@/components/ui/card';
 
-// Define interface for route objects
-interface Route {
-  id: string;
-  route_name: string;
-  start_address: string;
-  end_address: string;
-  status: string;
-  total_stops?: number;
-  estimated_distance?: number;
-  // Add other properties as needed
-}
+// Mock data for routes
+const mockRoutes = [
+  {
+    id: '1',
+    name: 'Downtown Delivery Route',
+    stops: 8,
+    estimatedTime: '1h 45m',
+    distance: '12.5 km',
+    status: 'pending'
+  },
+  {
+    id: '2',
+    name: 'Westside Delivery',
+    stops: 5,
+    estimatedTime: '55m',
+    distance: '8.2 km',
+    status: 'in_progress'
+  },
+  {
+    id: '3',
+    name: 'Northside Delivery',
+    stops: 12,
+    estimatedTime: '2h 15m',
+    distance: '18.3 km',
+    status: 'completed'
+  },
+  {
+    id: '4',
+    name: 'Evening Express',
+    stops: 6,
+    estimatedTime: '1h 10m',
+    distance: '9.7 km',
+    status: 'pending'
+  },
+];
 
 export default function RoutesScreen() {
-  const [routes, setRoutes] = useState<Route[]>([]);
-  const [loading, setLoading] = useState(true);
-  const { user } = useAuth();
-
-  useEffect(() => {
-    fetchRoutes();
-  }, []);
-
-  const fetchRoutes = async () => {
-    if (!user) return;
-    
-    try {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('routes')
-        .select('*')
-        .eq('driver_id', user.id)
-        .order('created_at', { ascending: false });
-      
-      if (error) throw error;
-      setRoutes(data || []);
-    } catch (error) {
-      console.error('Error fetching routes:', error);
-      Alert.alert('Error', 'Failed to load routes');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleCreateRoute = () => {
-    // For now, just show alert since the page doesn't exist yet
-    Alert.alert('Coming Soon', 'Route creation will be available soon!');
-    // Once you create the route creation page, you can uncomment this:
-    // router.navigate("/(tabs)/create-route");
-  };
-
-  const renderRoute = ({ item }: { item: Route }) => (
-    <TouchableOpacity 
-      style={styles.routeItem}
-      onPress={() => {
-        // For now, just show alert since the page doesn't exist yet
-        Alert.alert('Route Details', `Details for route: ${item.route_name}`);
-        // Once you create the route details page, you can uncomment this:
-        // router.navigate(`/(tabs)/route-details/${item.id}`);
-      }}
-    >
-      <ThemedText type="defaultSemiBold">{item.route_name}</ThemedText>
-      <ThemedText>{item.start_address} to {item.end_address}</ThemedText>
-      <ThemedText>Status: {item.status}</ThemedText>
-      <ThemedText>
-        Stops: {item.total_stops || 0} • Est. Distance: {Math.round(item.estimated_distance || 0)} km
-      </ThemedText>
-    </TouchableOpacity>
-  );
-
   return (
-    <ThemedView style={styles.container}>
-      <ThemedView style={styles.header}>
-        <ThemedText type="title">My Routes</ThemedText>
-        <TouchableOpacity style={styles.createButton} onPress={handleCreateRoute}>
-          <ThemedText style={styles.createButtonText}>Create New</ThemedText>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => router.back()}>
+          <ArrowLeft stroke="#0f172a" width={24} height={24} />
         </TouchableOpacity>
-      </ThemedView>
-
-      {loading ? (
-        <ThemedView style={styles.centerContent}>
-          <ThemedText>Loading routes...</ThemedText>
-        </ThemedView>
-      ) : routes.length === 0 ? (
-        <ThemedView style={styles.centerContent}>
-          <ThemedText>No routes found. Create your first route!</ThemedText>
-        </ThemedView>
-      ) : (
-        <FlatList
-          data={routes}
-          renderItem={renderRoute}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.listContent}
-        />
-      )}
-    </ThemedView>
+        <ThemedText type="title">Routes</ThemedText>
+        <View style={{ width: 24 }} />
+      </View>
+      
+      <View style={styles.filterContainer}>
+        <ScrollView 
+          horizontal 
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.filterScroll}
+        >
+          <TouchableOpacity style={[styles.filterChip, styles.activeFilterChip]}>
+            <ThemedText style={styles.activeFilterText}>All</ThemedText>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.filterChip}>
+            <ThemedText>In Progress</ThemedText>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.filterChip}>
+            <ThemedText>Pending</ThemedText>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.filterChip}>
+            <ThemedText>Completed</ThemedText>
+          </TouchableOpacity>
+        </ScrollView>
+      </View>
+      
+      <FlatList
+        data={mockRoutes}
+        contentContainerStyle={styles.routesList}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <Card style={styles.routeCard}>
+            <CardContent style={styles.routeCardContent}>
+              <ThemedText style={styles.routeName}>{item.name}</ThemedText>
+              <ThemedView style={styles.routeDetails}>
+                <ThemedText style={styles.routeDetailsText}>
+                  {item.stops} stops • {item.estimatedTime} • {item.distance}
+                </ThemedText>
+                <ThemedView 
+                  style={[
+                    styles.statusBadge,
+                    { 
+                      backgroundColor: 
+                        item.status === 'in_progress' ? '#0284c7' : 
+                        item.status === 'pending' ? '#d97706' : '#16a34a'
+                    }
+                  ]}
+                >
+                  <ThemedText style={styles.statusText}>
+                    {item.status === 'in_progress' ? 'In Progress' :
+                      item.status === 'pending' ? 'Pending' : 'Completed'}
+                  </ThemedText>
+                </ThemedView>
+              </ThemedView>
+              <View style={styles.actionButtons}>
+                <TouchableOpacity 
+                  style={[styles.actionButton, styles.viewButton]}
+                  onPress={() => router.push('/(tabs)/route-optimization')}
+                >
+                  <ThemedText style={styles.actionButtonText}>View Route</ThemedText>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  style={[styles.actionButton, styles.startButton]}
+                  onPress={() => router.push('/(tabs)/navigation')}
+                >
+                  <ThemedText style={styles.actionButtonText}>Start Navigation</ThemedText>
+                </TouchableOpacity>
+              </View>
+            </CardContent>
+          </Card>
+        )}
+      />
+      
+      <TouchableOpacity 
+        style={styles.createRouteButton}
+        onPress={() => router.push('/(tabs)/route-creation')}
+      >
+        <Plus stroke="#ffffff" width={24} height={24} />
+        <ThemedText style={styles.createRouteText}>Create New Route</ThemedText>
+      </TouchableOpacity>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    backgroundColor: '#f8fafc',
   },
   header: {
     flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: '#ffffff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#e2e8f0',
+  },
+  filterContainer: {
+    backgroundColor: '#ffffff',
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e2e8f0',
+  },
+  filterScroll: {
+    paddingHorizontal: 16,
+  },
+  filterChip: {
+    paddingVertical: 6,
+    paddingHorizontal: 16,
+    borderRadius: 16,
+    backgroundColor: '#f1f5f9',
+    marginRight: 8,
+  },
+  activeFilterChip: {
+    backgroundColor: '#3b82f6',
+  },
+  activeFilterText: {
+    color: '#ffffff',
+    fontWeight: '600',
+  },
+  routesList: {
+    padding: 16,
+    paddingBottom: 80,
+  },
+  routeCard: {
+    marginBottom: 16,
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
+  routeCardContent: {
+    padding: 16,
+  },
+  routeName: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#0f172a',
+    marginBottom: 8,
+  },
+  routeDetails: {
+    flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 16,
   },
-  createButton: {
-    backgroundColor: '#0a7ea4',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 8,
+  routeDetailsText: {
+    fontSize: 14,
+    color: '#64748b',
   },
-  createButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
+  statusBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
   },
-  listContent: {
-    paddingBottom: 20,
+  statusText: {
+    color: '#ffffff',
+    fontSize: 12,
+    fontWeight: '500',
   },
-  routeItem: {
-    padding: 16,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    marginBottom: 12,
+  actionButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
-  centerContent: {
+  actionButton: {
     flex: 1,
-    justifyContent: 'center',
+    paddingVertical: 10,
+    borderRadius: 8,
     alignItems: 'center',
+    marginHorizontal: 4,
+  },
+  viewButton: {
+    backgroundColor: '#f1f5f9',
+  },
+  startButton: {
+    backgroundColor: '#3b82f6',
+  },
+  actionButtonText: {
+    fontWeight: '600',
+    color: '#0f172a',
+  },
+  createRouteButton: {
+    position: 'absolute',
+    bottom: 16,
+    right: 16,
+    left: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#0ea5e9',
+    borderRadius: 12,
+    paddingVertical: 16,
+    shadowColor: '#0ea5e9',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  createRouteText: {
+    color: '#ffffff',
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginLeft: 8,
   },
 });

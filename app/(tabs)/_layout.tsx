@@ -1,4 +1,3 @@
-// app/(tabs)/_layout.tsx
 import { Tabs } from 'expo-router';
 import React from 'react';
 import { Platform } from 'react-native';
@@ -42,24 +41,43 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="map"
+        name="route-creation"
         options={{
-          title: 'Map',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="chevron.left.forwardslash.chevron.right" color={color} />,
+          title: 'Create',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="plus" color={color} />,
         }}
       />
       <Tabs.Screen
-        name="profile"
+        name="analytics"
         options={{
-          title: 'Profile',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          title: 'Analytics',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="chart.bar" color={color} />,
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="settings"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: 'Settings',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="gear" color={color} />,
+        }}
+      />
+      {/* Hidden screens that don't appear in the tab bar */}
+      <Tabs.Screen
+        name="route-optimization"
+        options={{
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="navigation"
+        options={{
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="route-summary"
+        options={{
+          href: null,
         }}
       />
     </Tabs>
