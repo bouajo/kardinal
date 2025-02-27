@@ -9,8 +9,8 @@ import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 
-// Explicit function declaration for default export
-function TabLayout() {
+// Change from function declaration + separate export to direct export default
+export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   return (
@@ -66,7 +66,8 @@ function TabLayout() {
       <Tabs.Screen
         name="profile"
         options={{
-          href: null,
+          title: 'Profile',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.fill" color={color} />,
         }}
       />
       <Tabs.Screen
@@ -102,6 +103,3 @@ function TabLayout() {
     </Tabs>
   );
 }
-
-// Very explicit export
-export default TabLayout;

@@ -14,8 +14,8 @@ import { AuthProvider } from '@/context/AuthContext';
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
-// Explicit function declaration for the default export
-function RootLayout() {
+// Change from function declaration + separate export to direct export default
+export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
@@ -44,6 +44,3 @@ function RootLayout() {
     </AuthProvider>
   );
 }
-
-// Very explicit export
-export default RootLayout;

@@ -7,7 +7,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { useAuth } from '@/context/AuthContext';
 
-export default function SignupScreen() {
+function SignupScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
@@ -115,3 +115,5 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
 });
+
+export default SignupScreen;

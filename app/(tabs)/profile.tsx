@@ -6,7 +6,7 @@ import { ThemedView } from '@/components/ThemedView';
 import { useAuth } from '@/context/AuthContext';
 import { router } from 'expo-router';
 
-export default function ProfileScreen() {
+function ProfileScreen() {
   const { signOut } = useAuth();
 
   const handleSignOut = async () => {
@@ -54,3 +54,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+
+export default ProfileScreen;

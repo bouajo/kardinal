@@ -1,6 +1,6 @@
 // app/(tabs)/index.tsx
 import React, { useEffect } from 'react';
-import { StyleSheet, TouchableOpacity, ScrollView, RefreshControl } from 'react-native';
+import { StyleSheet, TouchableOpacity, ScrollView, RefreshControl, Platform } from 'react-native';
 import { router } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import Animated, { 
