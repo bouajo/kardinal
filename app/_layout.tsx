@@ -14,7 +14,8 @@ import { AuthProvider } from '@/context/AuthContext';
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
-// Change from function declaration + separate export to direct export default
+// Explicitly define RootLayout as a function component with a default export
+// This helps Expo Router correctly identify it as the root layout component
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
@@ -34,10 +35,11 @@ export default function RootLayout() {
   return (
     <AuthProvider>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        {/* Make sure all screens are properly defined with explicit names */}
         <Stack>
           <Stack.Screen name="(auth)" options={{ headerShown: false }} />
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="+not-found" />
+          <Stack.Screen name="+not-found" options={{ title: 'Not Found' }} />
         </Stack>
         <StatusBar style="auto" />
       </ThemeProvider>
