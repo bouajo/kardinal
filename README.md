@@ -1,50 +1,101 @@
-# Welcome to your Expo app 👋
+# Route Optimizer App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A React Native mobile application for drivers to optimize multi-stop routes. Built with Expo, React Native, Google Places API, and HERE Maps.
 
-## Get started
+## Features
 
-1. Install dependencies
+- Display maps with current location
+- Search for addresses using Google Places Autocomplete
+- Add and remove multiple stops
+- Visualize routes on the map
+- (Coming soon) Route optimization
 
-   ```bash
-   npm install
-   ```
+## Prerequisites
 
-2. Start the app
+- Node.js (v14 or newer)
+- npm or yarn
+- Expo CLI
+- An Android or iOS device with Expo Go installed, or emulators
 
-   ```bash
-    npx expo start
-   ```
+## API Keys Required
 
-In the output, you'll find options to open the app in a
+- Google Places API key
+- HERE Maps API key
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Getting Started
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+1. Clone the repository
+2. Install dependencies
 
 ```bash
-npm run reset-project
+npm install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+3. Set up environment variables in `.env` file
 
-## Learn more
+```
+HERE_API_KEY=your_here_api_key_here
+GOOGLE_PLACES_API_KEY=your_google_places_api_key_here
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+4. Update the API keys in `app.json`
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+5. Start the Expo development server
 
-## Join the community
+```bash
+npm start
+```
 
-Join our community of developers creating universal apps.
+6. Scan the QR code with Expo Go app on your device, or press 'a' for Android emulator or 'i' for iOS simulator
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## Project Structure
+
+```
+/assets              # App icons and splash screen resources
+/src
+  /components        # Reusable UI components
+  /screens           # App screens
+  /navigation        # Navigation configuration
+  /services          # API services and business logic
+  /utils             # Utility functions
+```
+
+## Development Phases
+
+### MVP Phase 1: Project setup and basic map display ✓
+- Set up React Native with Expo
+- Configure Google Maps
+- Display current location
+
+### MVP Phase 2: Location input with Google Places ✓
+- Implement location search with autocomplete
+- Allow adding multiple destinations
+- Display location list
+
+### MVP Phase 3: Route calculation (In progress)
+- Implement route calculation between waypoints
+- Display route on map
+- Show estimated time and distance
+
+### MVP Phase 4: Multi-stop route support (Upcoming)
+- Add UI for managing multiple waypoints
+- Calculate routes with multiple stops
+- Add reordering capability
+
+### MVP Phase 5: Route optimization (Upcoming)
+- Implement algorithm to optimize stop order
+- Add UI for optimization controls
+- Calculate and display optimized routes
+
+## Dependencies
+
+- React Native
+- Expo
+- React Navigation
+- Google Maps / React Native Maps
+- Google Places Autocomplete
+- HERE Maps API
+
+## License
+
+MIT
