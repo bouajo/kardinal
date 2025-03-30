@@ -2,19 +2,54 @@ import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, FlatList } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 
-const LocationList = ({ locations, onRemoveLocation, onReorderLocations }) => {
+const LocationList = ({ locations, onRemoveLocation, onReorderLocations, onEditLocation }) => {
   const renderItem = ({ item, index }) => (
     <View style={styles.locationItem}>
-      <View style={styles.locationInfo}>
-        <Text style={styles.locationName}>{item.name}</Text>
-        <Text style={styles.locationAddress} numberOfLines={1}>{item.address}</Text>
-      </View>
       <TouchableOpacity 
-        style={styles.removeButton}
-        onPress={() => onRemoveLocation(index)}
+        style={styles.locationInfo}
+        onPress={() => {
+          console.log('Location item pressed', item, index);
+          onEditLocation && onEditLocation(item, index);
+        }}
       >
-        <FontAwesome name="remove" size={20} color="#FF3B30" />
+        <View style={styles.locationHeader}>
+          <Text style={styles.locationName}>{item.name}</Text>
+          {item.customerName && (
+            <View style={styles.customerTag}>
+              <Text style={styles.customerTagText}>{item.customerName}</Text>
+            </View>
+          )}
+        </View>
+        <Text style={styles.locationAddress} numberOfLines={1}>{item.address}</Text>
+        
+        {/* Display time slot if available */}
+        {(item.startTime && item.endTime) && (
+          <View style={styles.timeSlotContainer}>
+            <FontAwesome name="clock-o" size={12} color="#666" />
+            <Text style={styles.timeSlotText}>
+              {item.startTime} - {item.endTime}
+            </Text>
+          </View>
+        )}
       </TouchableOpacity>
+      
+      <View style={styles.actionButtons}>
+        <TouchableOpacity 
+          style={styles.editButton}
+          onPress={() => {
+            console.log('Edit button pressed', item, index);
+            onEditLocation && onEditLocation(item, index);
+          }}
+        >
+          <FontAwesome name="pencil" size={18} color="#2196F3" />
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={styles.removeButton}
+          onPress={() => onRemoveLocation(index)}
+        >
+          <FontAwesome name="trash" size={18} color="#FF3B30" />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 
@@ -72,16 +107,52 @@ const styles = StyleSheet.create({
   },
   locationInfo: {
     flex: 1,
+    paddingRight: 10,
+  },
+  locationHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 2,
   },
   locationName: {
     fontSize: 16,
     fontWeight: '500',
     color: '#333',
+    marginRight: 8,
   },
   locationAddress: {
     fontSize: 14,
     color: '#666',
+    marginBottom: 4,
+  },
+  customerTag: {
+    backgroundColor: '#E3F2FD',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 12,
+  },
+  customerTagText: {
+    fontSize: 12,
+    color: '#1565C0',
+    fontWeight: '500',
+  },
+  timeSlotContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginTop: 2,
+  },
+  timeSlotText: {
+    fontSize: 12,
+    color: '#666',
+    marginLeft: 4,
+  },
+  actionButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  editButton: {
+    padding: 8,
+    marginRight: 4,
   },
   removeButton: {
     padding: 8,

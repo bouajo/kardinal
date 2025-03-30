@@ -414,6 +414,35 @@ const HomeScreen = () => {
     }
   };
 
+  const handleEditLocationFromList = (location, index) => {
+    console.log('Editing location from list:', { location, index });
+    // Add more detailed logging
+    console.log('Location details:', {
+      address: location.address || location.name,
+      customerName: location.customerName || '',
+      phoneNumber: location.phoneNumber || '',
+      startTime: location.startTime || '',
+      endTime: location.endTime || '',
+      notes: location.notes || ''
+    });
+    
+    setSelectedStop({
+      ...location,
+      index,
+      address: location.address || location.name,
+      customerName: location.customerName || '',
+      phoneNumber: location.phoneNumber || '',
+      startTime: location.startTime || '',
+      endTime: location.endTime || '',
+      notes: location.notes || ''
+    });
+    
+    // Added to debug modal visibility
+    console.log('Setting showStopDetails to true');
+    setShowStopDetails(true);
+    console.log('Current showStopDetails state:', showStopDetails);
+  };
+
   return (
     <KeyboardAvoidingView 
       style={{ flex: 1 }} 
@@ -525,6 +554,7 @@ const HomeScreen = () => {
                 <LocationList 
                   locations={locations}
                   onRemoveLocation={handleRemoveLocation}
+                  onEditLocation={handleEditLocationFromList}
                 />
               </View>
             )}
@@ -648,25 +678,33 @@ const HomeScreen = () => {
                               </Text>
                               
                               {/* Show additional details if available */}
-                              {locationData && locationData.timeslot && (
-                                <Text style={styles.additionalDetailText}>
-                                  <Text style={styles.detailLabel}>Time slot: </Text>
-                                  {locationData.timeslot}
-                                </Text>
-                              )}
-                              
-                              {locationData && locationData.phoneNumber && (
-                                <Text style={styles.additionalDetailText}>
-                                  <Text style={styles.detailLabel}>Phone: </Text>
-                                  {locationData.phoneNumber}
-                                </Text>
-                              )}
-                              
-                              {locationData && locationData.notes && (
-                                <Text style={styles.additionalDetailText} numberOfLines={2}>
-                                  <Text style={styles.detailLabel}>Notes: </Text>
-                                  {locationData.notes}
-                                </Text>
+                              {locationData && (
+                                <View style={styles.additionalDetails}>
+                                  {locationData.customerName && (
+                                    <Text style={styles.additionalDetailText}>
+                                      <Text style={styles.detailLabel}>Customer: </Text>
+                                      {locationData.customerName}
+                                    </Text>
+                                  )}
+                                  {(locationData.startTime && locationData.endTime) && (
+                                    <Text style={styles.additionalDetailText}>
+                                      <Text style={styles.detailLabel}>Time slot: </Text>
+                                      {locationData.startTime} - {locationData.endTime}
+                                    </Text>
+                                  )}
+                                  {locationData.phoneNumber && (
+                                    <Text style={styles.additionalDetailText}>
+                                      <Text style={styles.detailLabel}>Phone: </Text>
+                                      {locationData.phoneNumber}
+                                    </Text>
+                                  )}
+                                  {locationData.notes && (
+                                    <Text style={styles.additionalDetailText}>
+                                      <Text style={styles.detailLabel}>Notes: </Text>
+                                      {locationData.notes}
+                                    </Text>
+                                  )}
+                                </View>
                               )}
                             </View>
                           </View>
@@ -678,6 +716,7 @@ const HomeScreen = () => {
                   <LocationList 
                     locations={locations}
                     onRemoveLocation={handleRemoveLocation}
+                    onEditLocation={handleEditLocationFromList}
                   />
                 )}
               </View>
@@ -691,6 +730,7 @@ const HomeScreen = () => {
             <LocationList 
               locations={locations}
               onRemoveLocation={handleRemoveLocation}
+              onEditLocation={handleEditLocationFromList}
             />
           </View>
         )}
@@ -745,7 +785,8 @@ const HomeScreen = () => {
           initialDetails={{
             customerName: selectedStop?.customerName || '',
             phoneNumber: selectedStop?.phoneNumber || '',
-            timeslot: selectedStop?.timeslot || '',
+            startTime: selectedStop?.startTime || '',
+            endTime: selectedStop?.endTime || '',
             notes: selectedStop?.notes || ''
           }}
         />
@@ -1249,13 +1290,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#fff',
   },
-  additionalDetailText: {
-    fontSize: 13,
-    color: '#666',
+  additionalDetails: {
     marginTop: 4,
   },
+  additionalDetailText: {
+    fontSize: 12,
+    color: '#666',
+    marginTop: 2,
+  },
   detailLabel: {
-    fontWeight: 'bold',
+    fontWeight: '600',
     color: '#555',
   },
 });
