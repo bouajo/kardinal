@@ -7,6 +7,8 @@
     "assetBundlePatterns": [
       "**/*"
     ],
+    "sdkVersion": "52.0.0",
+    "platforms": ["ios", "android"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.yourcompany.routeoptimizer",
@@ -41,6 +43,11 @@
           "locationAlwaysAndWhenInUsePermission": "Allow Route Optimizer to use your location to show your position on the map and optimize routes."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "your-project-id"
+      }
+    }
   }
 }
